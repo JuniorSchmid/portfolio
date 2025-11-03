@@ -26,6 +26,7 @@ import {
   Code,
 } from "lucide-react"
 import { SiJavascript, SiPython, SiCss3, SiHtml5, SiRuby, SiNodedotjs, SiMysql, SiTypescript } from "react-icons/si"
+import { TbFileTypeSql } from "react-icons/tb";
 
 export default function Portfolio() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -34,7 +35,7 @@ export default function Portfolio() {
   const [typingIndex, setTypingIndex] = useState(0)
 
   const typingTexts = [
-    "Desenvolvedor Full-Stack",
+    "Desenvolvedor Web",
     "Melhores soluções para seus projetos",
     "Focado em Clean Code",
   ]
@@ -109,7 +110,15 @@ export default function Portfolio() {
     { name: "Node.js", icon: SiNodedotjs, color: "#339933" },
     { name: "MySQL", icon: SiMysql, color: "#4479A1" },
     { name: "TypeScript", icon: SiTypescript, color: "#3178C6" },
-    { name: "C#", icon: Code, color: "#239120" }, // Replaced SiCsharp with Code icon from Lucide
+    { name: "C#", icon: Code, color: "#239120" }, // usarndo o ícone genérico de código para C#
+    {name: "Git", icon: SiRuby, color: "#F05032" }, // usarndo o ícone do Ruby para Git
+    { name: "GitHub", icon: Github, color: "#181717" },
+    { name: "React", icon: SiJavascript, color: "#61DAFB" }, // usarndo o ícone do JavaScript para React
+    { name: "Next.js", icon: SiJavascript, color: "#000000" }, // usarndo o ícone do JavaScript para Next.js
+    { name: "Tailwind CSS", icon: SiCss3, color: "#38B2AC" }, // usarndo o ícone do CSS para Tailwind CSS
+    { name: "SQL", icon: TbFileTypeSql, color: "#CC2927" },
+    { name: "noSLQ", icon: SiMysql, color: "#F29111" }, // usando o ícone do MySQL para NoSQL 
+    
   ]
 
   const softSkills = [
@@ -275,7 +284,7 @@ export default function Portfolio() {
                   <a
                     key={label}
                     href={href}
-                    Target="_blank" rel="noopener noreferrer"
+                    target="_blank" rel="noopener noreferrer"
                     className="w-12 h-12 rounded-full glass flex items-center justify-center hover-glow transition-all hover-scale"
                     aria-label={label}
                   >
