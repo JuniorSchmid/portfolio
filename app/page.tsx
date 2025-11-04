@@ -149,7 +149,7 @@ export default function Portfolio() {
     },
     {
       title: "Green Check",
-      description: "aplicativo desenvolvido para uma competição de talentos direcionada a john deere. Nesse projeto a gente criou um check para saber se esta ou nao um adesivo de segurança",
+      description: "aplicativo desenvolvido para uma competição de talentos direcionada a john deere. Nesse projeto nossa equipe criou um check para saber se esta ou não um adesivo de segurança",
       tags: ["Python", "CVML", "API Integration"],
       image: "/greencheck.jpeg",
     },
