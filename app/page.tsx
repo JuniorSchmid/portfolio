@@ -27,6 +27,8 @@ import {
 } from "lucide-react"
 import { SiJavascript, SiPython, SiCss3, SiHtml5, SiRuby, SiNodedotjs, SiMysql, SiTypescript } from "react-icons/si"
 import { TbFileTypeSql } from "react-icons/tb";
+import { FaPhp } from "react-icons/fa";
+import Image from "next/image"
 
 export default function Portfolio() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -106,18 +108,17 @@ export default function Portfolio() {
     { name: "Python", icon: SiPython, color: "#3776AB" },
     { name: "CSS", icon: SiCss3, color: "#1572B6" },
     { name: "HTML", icon: SiHtml5, color: "#E34F26" },
-    { name: "Ruby", icon: SiRuby, color: "#CC342D" },
+    { name: "PHP", icon: FaPhp, color: "#F29111" },
     { name: "Node.js", icon: SiNodedotjs, color: "#339933" },
     { name: "MySQL", icon: SiMysql, color: "#4479A1" },
     { name: "TypeScript", icon: SiTypescript, color: "#3178C6" },
-    { name: "C#", icon: Code, color: "#239120" }, // usarndo o ícone genérico de código para C#
     {name: "Git", icon: SiRuby, color: "#F05032" }, // usarndo o ícone do Ruby para Git
     { name: "GitHub", icon: Github, color: "#181717" },
     { name: "React", icon: SiJavascript, color: "#61DAFB" }, // usarndo o ícone do JavaScript para React
     { name: "Next.js", icon: SiJavascript, color: "#000000" }, // usarndo o ícone do JavaScript para Next.js
     { name: "Tailwind CSS", icon: SiCss3, color: "#38B2AC" }, // usarndo o ícone do CSS para Tailwind CSS
     { name: "SQL", icon: TbFileTypeSql, color: "#CC2927" },
-    { name: "noSLQ", icon: SiMysql, color: "#F29111" }, // usando o ícone do MySQL para NoSQL 
+
     
   ]
 
@@ -149,8 +150,8 @@ export default function Portfolio() {
     },
     {
       title: "Green Check",
-      description: "aplicativo desenvolvido para uma competição de talentos direcionada a john deere. Nesse projeto nossa equipe criou um check para saber se esta ou não um adesivo de segurança",
-      tags: ["Python", "CVML", "API Integration"],
+      description: "Aplicativo desenvolvido para uma competição de talentos direcionada a john deere. Nesse projeto nossa equipe criou um check para saber se esta ou não um adesivo de segurança",
+      tags: ["Python", "CVML", "API Integration", "OpenCV"],
       image: "/greencheck.jpeg",
     },
   ]
@@ -168,9 +169,13 @@ export default function Portfolio() {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#ff4ecd] to-[#6a11cb] flex items-center justify-center font-bold text-white">
-                J
-              </div>
+              <Image
+                src="/logo_main.png"
+                alt="Logo Junior"
+                width={80}
+                height={80}
+                className="rounded-lg"
+              />
               <span className="font-semibold text-lg">Junior • Portfólio</span>
             </div>
 
@@ -279,7 +284,7 @@ export default function Portfolio() {
                   { icon: Linkedin, href: "https://www.linkedin.com/in/junior-schmid-165a10309", label: "LinkedIn" },
                   { icon: Github, href: "https://github.com/JuniorSchmid", label: "GitHub" },
                   { icon: Mail, href: "mailto:juniorschmid22@gmail.com.com", label: "Email" },
-                  { icon: Instagram, href: "https://www.instagram.com/juniorschmid_03", label: "Instagram" },
+                  { icon: Instagram, href: "https://www.instagram.com/juniorschmid_09", label: "Instagram" },
                 ].map(({ icon: Icon, href, label }) => (
                   <a
                     key={label}
@@ -491,7 +496,7 @@ export default function Portfolio() {
                   { icon: Mail, label: "Email", value: "juniorschmid22@gmail.com" },
                   { icon: Linkedin, label: "LinkedIn", value: "junior-schmid-165a10309" },
                   { icon: Github, label: "GitHub", value: "/JuniorSchmid" },
-                  { icon: Instagram, label: "Instagram", value: "@juniorschmid_03" },
+                  { icon: Instagram, label: "Instagram", value: "@juniorschmid_09" },
                 ].map(({ icon: Icon, label, value }) => (
                   <div key={label} className="flex items-center space-x-4">
                     <div className="w-12 h-12 rounded-lg glass flex items-center justify-center">
