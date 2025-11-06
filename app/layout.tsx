@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Poppins } from "next/font/google"
 import "./globals.css"
 
+
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
@@ -12,18 +13,22 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "Junior • Portfólio",
-  description: "Desenvolvedor Full-Stack focado em criar soluções inovadoras e experiências excepcionais",
+  description: "Desenvolvedor WEB focado em criar soluções inovadoras e experiências excepcionais",
   generator: "Junior PJ",
+  icons: {
+    icon: "/logo_main2.png",
+  },
 }
-
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode
-}>) {
+}) {
   return (
-    <html lang="pt-BR" className="dark">
-      <body className={`${poppins.variable} font-sans antialiased`}>{children}</body>
+    <html lang="pt-BR" className={poppins.variable}>
+      <body>
+        {children}
+      </body>
     </html>
   )
 }
