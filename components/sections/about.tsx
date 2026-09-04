@@ -38,7 +38,9 @@ export function About() {
               </div>
               <div className="glass rounded-2xl p-5">
                 <dt className="label text-faint">Foco</dt>
-                <dd className="mt-2 font-medium">Automação e IA</dd>
+                <dd className="mt-2 font-medium">
+                  Automação, desenvolvimento web e IA
+                </dd>
               </div>
             </dl>
           </div>
