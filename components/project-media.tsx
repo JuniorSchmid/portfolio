@@ -8,13 +8,16 @@ import type { Project } from "@/data/projects"
  */
 export function ProjectMedia({ project }: { project: Project }) {
   if (project.image) {
+    // Proporção real de cada arquivo, não um quadro fixo: screenshot de site
+    // é ~2.1:1 e seria decapitado por um recorte 16:10.
     return (
-      <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-white/10 bg-elevated">
+      <div className="overflow-hidden rounded-2xl border border-white/10 bg-elevated">
         <Image
           src={project.image}
           alt={project.imageAlt ?? `Interface do projeto ${project.title}`}
-          fill
-          className="object-cover"
+          width={project.imageWidth ?? 1600}
+          height={project.imageHeight ?? 1000}
+          className="h-auto w-full"
           sizes="(max-width: 1024px) 100vw, 50vw"
         />
       </div>
