@@ -93,6 +93,14 @@ export default async function CaseStudyPage({
                     <dd className="mt-2 text-sm font-medium">{project.role}</dd>
                   </div>
                 )}
+                {project.client && (
+                  <div className="glass col-span-2 rounded-2xl p-5">
+                    <dt className="label text-faint">Contexto</dt>
+                    <dd className="mt-2 text-sm font-medium">
+                      {project.client}
+                    </dd>
+                  </div>
+                )}
                 <div className="glass col-span-2 rounded-2xl p-5">
                   <dt className="label text-faint">Stack</dt>
                   <dd className="mt-2 text-sm font-medium">

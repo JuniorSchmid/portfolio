@@ -2,9 +2,9 @@
  * Fonte única dos projetos. A home lê os destacados, /projetos lê todos
  * e /projetos/[slug] lê um pelo slug. Adicionar projeto = adicionar objeto.
  *
- * NOTA: os campos `problem`, `approach` e `decisions` são rascunhos escritos
- * a partir do que o Junior descreveu. Nenhum número, resultado ou métrica foi
- * inventado — onde falta informação, o campo está vazio de propósito.
+ * NOTA: nenhum número, resultado ou métrica foi inventado. O case do
+ * PaintCheck vem do README do próprio projeto; onde falta informação,
+ * o campo simplesmente não existe.
  */
 
 export type ProjectKind =
@@ -25,16 +25,20 @@ export type Project = {
   /** Parágrafo de apoio no bloco de destaque. */
   description: string
   stack: string[]
-  /** Destaques ganham bloco escuro de largura total na home. */
+  /** Destaques ganham bloco grande na home. */
   featured: boolean
   /** Trabalho sob confidencialidade — sem screenshot, sem link. */
   confidential?: boolean
   image?: string
   imageAlt?: string
+  /** Proporção real do arquivo, para a imagem não ser recortada. */
+  imageWidth?: number
+  imageHeight?: number
   repo?: string
   live?: string
   year?: string
   role?: string
+  client?: string
   /** Conteúdo do case study. Ausente = projeto sem página própria. */
   caseStudy?: {
     problem: string
@@ -56,9 +60,12 @@ export const projects: Project[] = [
     stack: ["Python", "OpenCV", "CV/ML", "API"],
     featured: true,
     image: "/greencheck.jpeg",
-    imageAlt: "Interface do Green Check analisando a imagem de uma peça",
+    imageAlt: "Peça verde com o adesivo de segurança sendo verificado",
+    imageWidth: 572,
+    imageHeight: 382,
     year: "2025",
     role: "Desenvolvimento em equipe",
+    client: "Competição ligada à John Deere",
     caseStudy: {
       problem:
         "A conferência da presença de um adesivo de segurança é uma verificação obrigatória, binária e repetida centenas de vezes. É exatamente o tipo de tarefa em que a atenção humana se degrada: quem confere sabe que o adesivo quase sempre está lá, e é justamente por isso que a exceção passa.",
@@ -86,33 +93,86 @@ export const projects: Project[] = [
     title: "PaintCheck",
     kind: "Automação",
     summary:
-      "Aplicação desktop que automatiza o fluxo de consulta e conferência do operador.",
+      "Controle visual de embalagem pós-pintura, integrado ao ERP por automação.",
     description:
-      "Leitura de códigos, consulta de informações e automação do fluxo de trabalho de quem opera o processo. Aplicação desktop com banco local — roda onde a internet não é garantida, que é a realidade de boa parte do chão de fábrica.",
-    stack: ["Python", "PySide6", "SQLite"],
+      "Na linha de pintura da Artefacto, o operador lê o código de barras da Ordem de Produção e o sistema consulta o ERP Technicon sozinho, exibindo num monitor em tela cheia a imagem da peça, o tipo de embalagem e a quantidade por KLT. O operador não precisa parar, procurar nem clicar em nada.",
+    stack: ["Python", "PySide6", "Selenium", "SQLite", "Chrome CDP"],
     featured: true,
+    image: "/paintcheck.jpg",
+    imageAlt: "Monitor do PaintCheck exibindo a peça e as instruções de embalagem",
+    imageWidth: 1365,
+    imageHeight: 768,
     year: "2025",
     role: "Desenvolvimento individual",
+    client: "Artefacto Indústria Metalúrgica",
     caseStudy: {
       problem:
-        "O operador precisava consultar informação em mais de um lugar para conferir um item, alternando entre sistema, papel e conhecimento próprio. Cada troca de contexto é tempo perdido e uma chance de erro.",
+        "Depois da pintura, cada peça precisa ser embalada de um jeito específico: um tipo de embalagem e uma quantidade por KLT. Essa informação existe no ERP Technicon, atrás de uma sequência de cliques, e consultá-la significa o operador sair da linha. É uma busca repetitiva no meio de um fluxo que não deveria parar — e embalar errado custa retrabalho.",
       approach:
-        "Concentrar a consulta num único ponto: o operador lê o código e a aplicação devolve, na mesma tela, tudo que ele precisa para decidir. Desktop com banco local para não depender de conexão.",
+        "Eliminar a consulta em vez de acelerá-la. O código de barras que já está na Ordem de Produção carrega a OP e o código do processo. O sistema lê esse código pelo scanner que já existe na linha, consulta o ERP sozinho e coloca a resposta num monitor em tela cheia, legível a distância. O operador não interage com o sistema: ele só bipa e olha.",
       decisions: [
         {
-          title: "Desktop, não web",
-          body: "Uma aplicação web exigiria rede estável no ponto de uso, o que não é garantido. Desktop com SQLite local remove essa dependência inteira.",
+          title: "Separar scanner de teclado pela velocidade de digitação",
+          body: "Um hook global de teclado captura tudo que é digitado na máquina. Um leitor de código de barras emite teclas com menos de 80ms entre elas; uma pessoa nunca digita assim. Esse filtro, somado à exigência do prefixo fixo 00, deixa a máquina ser usada normalmente sem disparar leituras falsas.",
         },
         {
-          title: "PySide6 pela densidade de informação",
-          body: "A tela precisa mostrar muita informação de uma vez, para leitura rápida e a alguma distância. Qt entrega controle fino de layout e tipografia que um wrapper de HTML não dá com o mesmo esforço.",
+          title: "Tampermonkey para alcançar um closure de JavaScript",
+          body: 'O botão "Último Registro" do Technicon vive dentro de um closure JS que o Selenium não consegue chamar. Em vez de simular cliques frágeis, um userscript intercepta o addEventListener antes do ERP carregar e expõe window.clicarUltimoRegistro(). O Selenium passa a chamar a própria função da aplicação, o que é muito mais estável que perseguir elementos na tela.',
+        },
+        {
+          title: "Desktop com SQLite local, não aplicação web",
+          body: "A linha não pode depender de rede. SQLite em modo WAL dá conta da concorrência entre a thread do ERP e a interface, e a fila com EMB e QUANT sobrevive a uma queda de energia — ao voltar, o monitor recompõe o estado sozinho.",
+        },
+        {
+          title: "ERP em thread separada",
+          body: "A consulta ao Technicon leva segundos. Rodando fora da thread de interface e conversando com ela por signals do Qt, o monitor nunca congela enquanto uma busca está em andamento — o que importa numa tela que fica exposta o tempo todo.",
+        },
+        {
+          title: "Cor única por código de peça pela razão áurea",
+          body: "Distribuir os matizes pela razão áurea gera mais de 50 cores visualmente distintas sem ninguém escolher cor nenhuma à mão. O operador passa a reconhecer a peça pela cor antes mesmo de ler o texto.",
         },
       ],
     },
   },
   {
-    slug: "automacao-processos-corporativos",
+    slug: "artefacto-digital",
     order: 3,
+    title: "Artefacto Digital",
+    kind: "Presença digital",
+    summary:
+      "Site institucional da Artefacto: processos, capacidade produtiva e produtos.",
+    description:
+      "Plataforma institucional para apresentar o que a operação faz e do que é capaz. É o contraponto aos outros projetos: aqui o problema não é de processo, é de comunicação — traduzir capacidade industrial em algo que um cliente entenda sem visitar a fábrica.",
+    stack: ["Next.js", "React", "Tailwind CSS"],
+    featured: true,
+    image: "/artefacto.jpg",
+    imageAlt: "Página inicial do site institucional da Artefacto",
+    imageWidth: 1600,
+    imageHeight: 740,
+    year: "2025",
+    role: "Desenvolvimento individual",
+    client: "Artefacto Indústria Metalúrgica",
+  },
+  {
+    slug: "briquefacil",
+    order: 4,
+    title: "BriqueFácil",
+    kind: "Produto web",
+    summary: "Marketplace com autenticação, busca, filtros e painel administrativo.",
+    description:
+      "Produto web completo, do modelo de dados à interface: cadastro e autenticação de usuários, publicação de anúncios, busca com filtros e uma área administrativa para moderação. É o projeto que mostra o outro lado do trabalho — produto para pessoas, não para chão de fábrica.",
+    stack: ["Next.js", "TypeScript", "React", "Banco de dados"],
+    featured: true,
+    image: "/briquefacil.jpg",
+    imageAlt: "Tela do marketplace BriqueFácil",
+    imageWidth: 1600,
+    imageHeight: 758,
+    year: "2025",
+    role: "Desenvolvimento individual",
+  },
+  {
+    slug: "automacao-processos-corporativos",
+    order: 5,
     title: "Automação de Processos Corporativos",
     kind: "Automação",
     summary:
@@ -120,7 +180,7 @@ export const projects: Project[] = [
     description:
       "Rotinas que liam, extraíam e validavam informação entre sistemas que não conversavam entre si — substituindo trabalho manual de copiar, conferir e transcrever. Por acordo de confidencialidade, o case é apresentado pelo fluxo, não por telas.",
     stack: ["Python", "Selenium", "OCR"],
-    featured: true,
+    featured: false,
     confidential: true,
     year: "2024 — 2025",
     role: "Desenvolvimento individual",
@@ -140,33 +200,6 @@ export const projects: Project[] = [
         },
       ],
     },
-  },
-  {
-    slug: "briquefacil",
-    order: 4,
-    title: "BriqueFácil",
-    kind: "Produto web",
-    summary: "Marketplace com autenticação, busca, filtros e painel administrativo.",
-    description:
-      "Produto web completo, do modelo de dados à interface: cadastro e autenticação de usuários, publicação de anúncios, busca com filtros e uma área administrativa para moderação.",
-    stack: ["Next.js", "TypeScript", "React", "Banco de dados"],
-    featured: false,
-    year: "2025",
-    role: "Desenvolvimento individual",
-  },
-  {
-    slug: "artefacto-digital",
-    order: 5,
-    title: "Artefacto Digital",
-    kind: "Presença digital",
-    summary:
-      "Plataforma institucional para apresentar processos, capacidade produtiva e produtos.",
-    description:
-      "Site institucional focado em comunicar o que a operação faz e do que é capaz — mais próximo de comunicação do que de sistema, e por isso um contraponto útil aos outros projetos.",
-    stack: ["Web", "Institucional"],
-    featured: false,
-    year: "2025",
-    role: "Desenvolvimento individual",
   },
   {
     slug: "plataforma-ecommerce",
