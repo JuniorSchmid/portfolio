@@ -15,30 +15,37 @@ export const profile = {
 } as const
 
 /**
- * As quatro camadas do processo. Este array é a fonte da seção 3D:
- * cada item vira uma placa no modelo e um item de texto no DOM.
- * Mudar aqui muda os dois — o 3D nunca fica dessincronizado do conteúdo.
+ * As quatro camadas do processo, reveladas uma a uma conforme o scroll.
+ * `note` é a frase curta que aparece destacada no card.
  */
 export const processLayers = [
   {
     id: "01",
     title: "Entrada",
-    body: "Onde o dado nasce: um sensor, uma imagem, uma planilha, um sistema legado que não expõe nada. É aqui que quase todo projeto de automação é decidido — se a entrada não é confiável, o resto não salva.",
+    note: "Se a entrada não é confiável, o resto não salva.",
+    body: "Onde o dado nasce: um sensor, uma imagem, uma planilha, um sistema legado que não expõe nada. É aqui que quase todo projeto de automação é decidido.",
+    tools: ["Sensores", "Imagem", "Planilhas", "Sistemas legados"],
   },
   {
     id: "02",
     title: "Extração",
-    body: "Tirar informação estruturada de algo que não foi feito para ser lido por máquina. Visão computacional, OCR, integração direta quando existe API, automação de interface quando não existe.",
+    note: "Ler o que não foi feito para ser lido por máquina.",
+    body: "Tirar informação estruturada de uma fonte que não coopera. Integração direta quando existe API, automação de interface quando não existe, visão computacional quando o dado só existe como imagem.",
+    tools: ["OpenCV", "OCR", "Selenium", "APIs"],
   },
   {
     id: "03",
     title: "Validação",
-    body: "A camada que separa automação de aceleração de erro. Toda informação extraída passa por regra antes de virar decisão, e o que não passa vira exceção sinalizada — nunca uma gravação silenciosa.",
+    note: "É o que separa automação de aceleração de erro.",
+    body: "Toda informação extraída passa por regra antes de virar decisão. O que não passa vira exceção sinalizada — nunca uma gravação silenciosa que ninguém percebe.",
+    tools: ["Regras de negócio", "Exceções", "Logs"],
   },
   {
     id: "04",
     title: "Saída",
-    body: "A informação chegando onde é útil: gravada no sistema, num relatório, num alerta. O trabalho só termina quando alguém consegue agir sobre o resultado sem retrabalho.",
+    note: "Só termina quando alguém consegue agir sem retrabalho.",
+    body: "A informação chegando onde é útil: gravada no sistema, num relatório, num alerta. Entregar o dado no lugar errado é o mesmo que não ter automatizado.",
+    tools: ["Banco de dados", "Relatório", "Alerta"],
   },
 ] as const
 

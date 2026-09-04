@@ -1,177 +1,201 @@
 "use client"
 
 import { useRef, useState } from "react"
-import dynamic from "next/dynamic"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { useGSAP } from "@gsap/react"
 import { processLayers } from "@/data/profile"
-import { ProcessDiagram } from "@/components/process-diagram"
 
 gsap.registerPlugin(useGSAP, ScrollTrigger)
 
-const ProcessAssembly = dynamic(
-  () => import("@/components/three/process-assembly"),
-  { ssr: false, loading: () => null },
-)
-
 /**
- * "sequenced" — desktop: seção fixada, camadas reveladas uma a uma pelo scroll.
- * "flat"      — mobile: sem pin (pin em tela pequena briga com a barra do browser).
- * "static"    — prefers-reduced-motion: sem WebGL, diagrama parado.
+ * As quatro camadas do processo sobem e aparecem conforme o scroll.
+ *
+ * Sem pin: a seção não sequestra a rolagem, o conteúdo só entra em cena.
+ * A coluna da esquerda fica presa (sticky) enquanto os cards passam, e a
+ * linha vertical se desenha acompanhando o progresso.
  */
-type Mode = "sequenced" | "flat" | "static"
-
 export function Process() {
-  const wrap = useRef<HTMLElement>(null)
-  const panel = useRef<HTMLDivElement>(null)
-  const progress = useRef(0)
+  const root = useRef<HTMLElement>(null)
+  const list = useRef<HTMLOListElement>(null)
+  const line = useRef<HTMLSpanElement>(null)
   const [step, setStep] = useState(0)
-  const [active, setActive] = useState(false)
-  const [mode, setMode] = useState<Mode>("flat")
 
   useGSAP(
     () => {
       const mm = gsap.matchMedia()
 
-      mm.add("(prefers-reduced-motion: reduce)", () => {
-        setMode("static")
-        setStep(processLayers.length - 1)
-      })
-
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        // Trigger na seção externa, não no painel: o painel é o elemento
-        // fixado, e um elemento pinado tem posição fixa — medir "bottom top"
-        // nele devolve um isActive errado e o canvas congela no último quadro.
-        const visibility = ScrollTrigger.create({
-          trigger: wrap.current,
-          start: "top bottom",
-          end: "bottom top",
-          onToggle: (self) => setActive(self.isActive),
+        // Cabeçalho entra subindo.
+        gsap.from(".proc-intro > *", {
+          y: 28,
+          opacity: 0,
+          duration: 0.7,
+          stagger: 0.08,
+          ease: "power3.out",
+          scrollTrigger: { trigger: root.current, start: "top 75%", once: true },
         })
 
-        // onToggle só dispara na mudança de estado. Quem recarrega a página já
-        // dentro da seção nunca receberia o primeiro toggle, e o canvas ficaria
-        // preto para sempre.
-        setActive(visibility.isActive)
-      })
+        const cards = gsap.utils.toArray<HTMLElement>(".proc-card")
 
-      mm.add(
-        "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
-        () => {
-          setMode("sequenced")
-
-          const pinned = ScrollTrigger.create({
-            trigger: panel.current,
-            start: "top top",
-            end: "+=2400",
-            pin: true,
-            scrub: 0.6,
-            onUpdate: (self) => {
-              progress.current = self.progress
-              const next = Math.min(
-                processLayers.length - 1,
-                Math.floor(self.progress * processLayers.length),
-              )
-              setStep((prev) => (prev === next ? prev : next))
-            },
+        cards.forEach((card, i) => {
+          // `from` de propósito: o card já nasce visível no HTML, a animação
+          // só tira dele. Se o JS falhar, a seção continua legível.
+          gsap.from(card, {
+            y: 56,
+            opacity: 0,
+            duration: 0.75,
+            ease: "power3.out",
+            scrollTrigger: { trigger: card, start: "top 88%", once: true },
           })
-
-          progress.current = pinned.progress
-        },
-      )
-
-      mm.add(
-        "(max-width: 767px) and (prefers-reduced-motion: no-preference)",
-        () => {
-          setMode("flat")
-          setStep(processLayers.length - 1)
 
           ScrollTrigger.create({
-            trigger: panel.current,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 0.6,
-            onUpdate: (self) => {
-              progress.current = self.progress
+            trigger: card,
+            start: "top 65%",
+            end: "bottom 45%",
+            onToggle: (self) => {
+              if (self.isActive) setStep(i)
             },
           })
-        },
-      )
+        })
+
+        // A linha desenha de cima para baixo acompanhando a rolagem.
+        gsap.fromTo(
+          line.current,
+          { scaleY: 0 },
+          {
+            scaleY: 1,
+            ease: "none",
+            transformOrigin: "top center",
+            scrollTrigger: {
+              trigger: list.current,
+              start: "top 72%",
+              end: "bottom 65%",
+              scrub: 0.5,
+            },
+          },
+        )
+      })
 
       return () => mm.revert()
     },
-    { scope: panel },
+    { scope: root },
   )
 
+  const pct = Math.round(((step + 1) / processLayers.length) * 100)
+
   return (
-    <section ref={wrap} id="processo" className="relative scroll-mt-16">
+    <section
+      ref={root}
+      id="processo"
+      className="relative scroll-mt-16 border-t border-line/60"
+    >
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute right-0 top-1/3 h-[420px] w-[520px] rounded-full opacity-15 blur-[130px] gradient-bg"
+        className="pointer-events-none absolute right-0 top-1/4 h-[420px] w-[520px] rounded-full opacity-[0.12] blur-[130px] gradient-bg"
       />
 
-      <div
-        ref={panel}
-        className="relative flex min-h-svh items-center overflow-hidden"
-      >
-        <div className="mx-auto grid w-full max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-2 lg:gap-16">
-          <div>
-            <p className="label text-pink">Como eu trabalho</p>
-            <h2 className="mt-5 text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.1]">
-              Toda automação é a mesma{" "}
-              <span className="gradient-text">pilha de quatro camadas.</span>
-            </h2>
-            <p className="measure mt-5 text-muted">
-              Muda o setor, muda a linguagem, muda o tamanho do problema — a
-              estrutura não muda. É por isso que o mesmo raciocínio serve para
-              uma verificação em linha de produção e para uma planilha que
-              alguém preenche à mão toda semana.
-            </p>
+      <div className="relative mx-auto grid max-w-7xl gap-12 px-6 py-24 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-20">
+        {/* Coluna presa: o enunciado fica à vista enquanto as camadas passam. */}
+        <div className="proc-intro lg:sticky lg:top-28 lg:self-start">
+          <p className="label text-pink">Como eu trabalho</p>
+          <h2 className="mt-5 text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.1]">
+            Toda automação é a mesma{" "}
+            <span className="gradient-text">pilha de quatro camadas.</span>
+          </h2>
+          <p className="measure mt-5 text-muted">
+            Muda o setor, muda a linguagem, muda o tamanho do problema — a
+            estrutura não muda. É por isso que o mesmo raciocínio serve para uma
+            verificação em linha de produção e para uma planilha que alguém
+            preenche à mão toda semana.
+          </p>
 
-            <ol className="mt-10 space-y-3">
-              {processLayers.map((layer, i) => {
-                const dimmed = mode === "sequenced" && i > step
-                return (
-                  <li
-                    key={layer.id}
-                    className={`grid grid-cols-[2.75rem_1fr] gap-x-4 rounded-2xl border p-4 transition-all duration-500 ${
-                      dimmed
-                        ? "border-white/5 bg-white/[0.02] opacity-40"
-                        : "border-white/10 bg-white/[0.04] opacity-100"
-                    }`}
-                  >
-                    <span
-                      className={`label pt-1 transition-colors duration-500 ${
-                        dimmed ? "text-faint" : "gradient-text"
-                      }`}
-                    >
-                      {layer.id}
-                    </span>
-                    <div>
-                      <h3 className="text-base font-semibold">{layer.title}</h3>
-                      <p className="mt-1 text-sm leading-relaxed text-muted">
-                        {layer.body}
-                      </p>
-                    </div>
-                  </li>
-                )
-              })}
-            </ol>
-          </div>
-
-          {/* O 3D é ilustração: todo o conteúdo já existe como texto ao lado. */}
-          <div
-            className="relative mx-auto aspect-square w-full max-w-[540px]"
-            aria-hidden="true"
-          >
-            {mode === "static" ? (
-              <ProcessDiagram />
-            ) : (
-              <ProcessAssembly progressRef={progress} active={active} />
-            )}
+          <div className="mt-10 max-w-xs">
+            <div className="flex items-baseline justify-between">
+              <span className="label text-faint">Camada</span>
+              <span className="text-sm font-medium tabular-nums">
+                <span className="gradient-text">
+                  {processLayers[step].id}
+                </span>
+                <span className="text-faint"> / 04</span>
+              </span>
+            </div>
+            <div className="mt-3 h-1 overflow-hidden rounded-full bg-white/10">
+              <div
+                className="h-full rounded-full gradient-bg transition-[width] duration-500 ease-out"
+                style={{ width: `${pct}%` }}
+              />
+            </div>
           </div>
         </div>
+
+        {/* Coluna que rola: cada camada sobe e aparece. */}
+        <ol ref={list} className="relative">
+          {/* Trilho + linha que se desenha com o scroll. */}
+          <span
+            aria-hidden="true"
+            className="absolute left-[1.375rem] top-2 hidden h-[calc(100%-1rem)] w-px bg-white/10 sm:block"
+          />
+          <span
+            ref={line}
+            aria-hidden="true"
+            className="absolute left-[1.375rem] top-2 hidden h-[calc(100%-1rem)] w-px origin-top gradient-bg sm:block"
+          />
+
+          {processLayers.map((layer, i) => {
+            const isActive = i === step
+            return (
+              <li
+                key={layer.id}
+                className="proc-card relative pb-6 sm:pl-16 last:pb-0"
+              >
+                {/* Marcador na trilha */}
+                <span
+                  aria-hidden="true"
+                  className={`absolute left-0 top-6 hidden h-11 w-11 place-items-center rounded-full border text-xs font-semibold transition-colors duration-500 sm:grid ${
+                    isActive
+                      ? "border-transparent gradient-bg text-white"
+                      : "border-white/15 bg-elevated text-faint"
+                  }`}
+                >
+                  {layer.id}
+                </span>
+
+                <div
+                  className={`rounded-2xl border p-6 transition-colors duration-500 ${
+                    isActive
+                      ? "border-pink/40 bg-white/[0.06]"
+                      : "border-white/10 bg-white/[0.03]"
+                  }`}
+                >
+                  <div className="flex items-baseline gap-3">
+                    <span className="gradient-text text-sm font-semibold sm:hidden">
+                      {layer.id}
+                    </span>
+                    <h3 className="text-xl font-semibold">{layer.title}</h3>
+                  </div>
+
+                  <p className="mt-3 text-base font-medium leading-snug text-white">
+                    {layer.note}
+                  </p>
+
+                  <p className="mt-3 leading-relaxed text-muted">{layer.body}</p>
+
+                  <ul className="mt-5 flex flex-wrap gap-2">
+                    {layer.tools.map((tool) => (
+                      <li
+                        key={tool}
+                        className="rounded-full border border-white/12 bg-white/5 px-3 py-1 text-xs text-muted"
+                      >
+                        {tool}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            )
+          })}
+        </ol>
       </div>
     </section>
   )
