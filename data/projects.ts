@@ -54,7 +54,7 @@ export const projects: Project[] = [
     title: "Green Check",
     kind: "Visão computacional",
     summary:
-      "Verificação automática da presença de um adesivo de segurança, por visão computacional.",
+      "Verificação automática de adesivo de segurança por visão computacional, desenvolvida para a John Deere.",
     description:
       "Desenvolvido em equipe para uma competição de talentos ligada à John Deere. O sistema analisa a imagem de uma peça e responde se o adesivo de segurança obrigatório está presente e posicionado — uma checagem que, feita por pessoas, é lenta e falha justamente por ser repetitiva.",
     stack: ["Python", "OpenCV", "CV/ML", "API"],

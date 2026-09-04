@@ -15,12 +15,13 @@ export function Projects() {
         <Reveal>
           <p className="label text-pink">Trabalho</p>
           <h2 className="mt-5 text-[clamp(1.75rem,4vw,2.75rem)] leading-[1.1]">
-            Cinco casos, com{" "}
-            <span className="gradient-text">pesos diferentes.</span>
+            Problemas diferentes,{" "}
+            <span className="gradient-text">o mesmo jeito de atacar.</span>
           </h2>
           <p className="measure mt-5 text-muted">
-            A numeração é ordem de leitura, e a força cai de propósito. Os três
-            primeiros são o que melhor explica como eu trabalho.
+            Chão de fábrica, produto web e presença digital. O que se repete não
+            é a tecnologia — é entender o processo antes de escrever a primeira
+            linha de código.
           </p>
         </Reveal>
 
@@ -33,11 +34,13 @@ export function Projects() {
                 </div>
 
                 <div>
+                  {/* Sem numeração: a categoria identifica o projeto sem
+                      sugerir que um vale mais que o outro. */}
                   <div className="flex flex-wrap items-baseline gap-x-4 gap-y-2">
-                    <span className="gradient-text text-sm font-semibold">
-                      {String(project.order).padStart(2, "0")}
-                    </span>
-                    <span className="label text-faint">{project.kind}</span>
+                    <span className="label gradient-text">{project.kind}</span>
+                    {project.year && (
+                      <span className="label text-faint">{project.year}</span>
+                    )}
                     {project.confidential && (
                       <span className="label rounded-full border border-white/15 px-2.5 py-0.5 text-faint">
                         Confidencial
@@ -79,30 +82,29 @@ export function Projects() {
           ))}
         </div>
 
-        <Reveal className="mt-16">
-          <h3 className="label text-faint">Também construí</h3>
+        {secondary.length > 0 && (
+          <Reveal className="mt-16">
+            <h3 className="label text-faint">Também construí</h3>
 
-          <ul className="mt-6 grid gap-4 sm:grid-cols-2">
-            {secondary.map((project) => (
-              <li
-                key={project.slug}
-                className="glass rounded-2xl p-5 transition-colors hover:border-pink/40"
-              >
-                <div className="flex items-baseline gap-3">
-                  <span className="gradient-text text-sm font-semibold">
-                    {String(project.order).padStart(2, "0")}
-                  </span>
-                  <h4 className="font-semibold">{project.title}</h4>
-                </div>
-                <p className="mt-2 text-sm text-muted">{project.summary}</p>
-                <p className="label mt-3 text-faint">{project.kind}</p>
-              </li>
-            ))}
-          </ul>
+            <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+              {secondary.map((project) => (
+                <li
+                  key={project.slug}
+                  className="glass rounded-2xl p-5 transition-colors hover:border-pink/40"
+                >
+                  <span className="label gradient-text">{project.kind}</span>
+                  <h4 className="mt-2 font-semibold">{project.title}</h4>
+                  <p className="mt-2 text-sm text-muted">{project.summary}</p>
+                </li>
+              ))}
+            </ul>
+          </Reveal>
+        )}
 
+        <Reveal className="mt-10">
           <Link
             href="/projetos"
-            className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-pink transition-opacity hover:opacity-75"
+            className="inline-flex items-center gap-2 text-sm font-medium text-pink transition-opacity hover:opacity-75"
           >
             Ver todos os projetos
             <ArrowRight className="h-4 w-4" aria-hidden="true" />

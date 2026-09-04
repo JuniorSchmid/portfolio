@@ -57,11 +57,7 @@ export default function ProjetosPage() {
               <ul className="mt-6 grid gap-4">
                 {group.items.map((project) => {
                   const inner = (
-                    <div className="glass grid grid-cols-[2.75rem_1fr] items-baseline gap-x-4 rounded-2xl p-6 transition-colors sm:grid-cols-[2.75rem_1fr_auto] sm:gap-x-8">
-                      <span className="gradient-text text-sm font-semibold">
-                        {String(project.order).padStart(2, "0")}
-                      </span>
-
+                    <div className="glass rounded-2xl p-6 transition-colors sm:flex sm:items-baseline sm:justify-between sm:gap-8">
                       <div>
                         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                           <h3 className="text-xl font-semibold">
@@ -88,7 +84,7 @@ export default function ProjetosPage() {
                         </ul>
                       </div>
 
-                      <span className="col-start-2 mt-4 inline-flex items-center gap-2 text-sm text-pink sm:col-start-3 sm:mt-0">
+                      <span className="mt-4 inline-flex shrink-0 items-center gap-2 text-sm text-pink sm:mt-0">
                         {project.caseStudy ? (
                           <>
                             Ver o case

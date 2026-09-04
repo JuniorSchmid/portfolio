@@ -62,10 +62,7 @@ export default async function CaseStudyPage({
               </Link>
 
               <div className="mt-10 flex flex-wrap items-baseline gap-x-4 gap-y-2">
-                <span className="gradient-text text-sm font-semibold">
-                  {String(project.order).padStart(2, "0")}
-                </span>
-                <span className="label text-faint">{project.kind}</span>
+                <span className="label gradient-text">{project.kind}</span>
                 {project.confidential && (
                   <span className="label rounded-full border border-white/15 px-2.5 py-0.5 text-faint">
                     Confidencial
