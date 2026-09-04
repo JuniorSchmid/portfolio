@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 
 const links = [
@@ -12,12 +13,18 @@ export function Navbar() {
     <header className="sticky top-0 z-50 border-b border-line/70 bg-night/85 backdrop-blur-md">
       <nav
         aria-label="Principal"
-        className="mx-auto flex max-w-7xl items-center gap-6 px-6 py-3.5"
+        className="mx-auto flex max-w-7xl items-center gap-6 px-6 py-3"
       >
         <Link href="/" className="mr-auto flex items-center gap-3">
-          <span className="grid h-9 w-9 place-items-center rounded-xl gradient-bg text-sm font-bold text-white">
-            JS
-          </span>
+          {/* JS — JavaScript e Junior Schmid ao mesmo tempo. */}
+          <Image
+            src="/logo.png"
+            alt=""
+            width={40}
+            height={40}
+            priority
+            className="h-10 w-10"
+          />
           <span className="font-semibold">Junior • Portfólio</span>
         </Link>
 

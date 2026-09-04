@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import { profile } from "@/data/profile"
 
@@ -6,9 +7,13 @@ export function Footer() {
     <footer className="border-t border-line/60">
       <div className="mx-auto flex max-w-7xl flex-wrap items-center gap-x-8 gap-y-4 px-6 py-10">
         <Link href="/" className="mr-auto flex items-center gap-3">
-          <span className="grid h-8 w-8 place-items-center rounded-lg gradient-bg text-xs font-bold text-white">
-            JS
-          </span>
+          <Image
+            src="/logo.png"
+            alt=""
+            width={32}
+            height={32}
+            className="h-8 w-8"
+          />
           <span className="text-sm font-medium">{profile.name}</span>
         </Link>
 
