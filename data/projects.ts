@@ -135,18 +135,18 @@ export const projects: Project[] = [
     },
   },
   {
-    slug: "artefacto-digital",
+    slug: "artefacto",
     order: 3,
-    title: "Artefacto Digital",
+    title: "Artefacto",
     kind: "Presença digital",
     summary:
-      "Site institucional da Artefacto: processos, capacidade produtiva e produtos.",
+      "Site de uma metalúrgica, com uma visita visual à fábrica inteira pelo navegador.",
     description:
-      "Plataforma institucional para apresentar o que a operação faz e do que é capaz. É o contraponto aos outros projetos: aqui o problema não é de processo, é de comunicação — traduzir capacidade industrial em algo que um cliente entenda sem visitar a fábrica.",
+      "Reúne tudo que um cliente precisa saber sobre a empresa — processos, capacidade produtiva e produtos — e vai além da ficha institucional: o site leva o visitante por uma visita visual à fábrica, mostrando a operação por dentro sem que ele precise ir até lá. É o contraponto aos outros projetos: aqui o problema não é de processo, é de comunicação.",
     stack: ["Next.js", "React", "Tailwind CSS"],
     featured: true,
     image: "/artefacto.jpg",
-    imageAlt: "Página inicial do site institucional da Artefacto",
+    imageAlt: "Página inicial do site da Artefacto",
     imageWidth: 1600,
     imageHeight: 740,
     year: "2025",
