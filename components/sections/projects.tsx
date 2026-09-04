@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+import { ArrowRight, ArrowUpRight, Github } from "lucide-react"
 import { allProjects, featuredProjects } from "@/data/projects"
 import { ProjectMedia } from "@/components/project-media"
 import { Reveal } from "@/components/reveal"
@@ -67,15 +67,39 @@ export function Projects() {
                     ))}
                   </ul>
 
-                  {project.caseStudy && (
-                    <Link
-                      href={`/projetos/${project.slug}`}
-                      className="mt-7 inline-flex items-center gap-2 text-sm font-medium text-pink transition-opacity hover:opacity-75"
-                    >
-                      Ver o case
-                      <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                    </Link>
-                  )}
+                  <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
+                    {project.caseStudy && (
+                      <Link
+                        href={`/projetos/${project.slug}`}
+                        className="inline-flex items-center gap-2 text-sm font-medium text-pink transition-opacity hover:opacity-75"
+                      >
+                        Ver o case
+                        <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                      </Link>
+                    )}
+                    {project.live && (
+                      <a
+                        href={project.live}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-white"
+                      >
+                        Abrir o site
+                        <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                      </a>
+                    )}
+                    {project.repo && (
+                      <a
+                        href={project.repo}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-white"
+                      >
+                        <Github className="h-4 w-4" aria-hidden="true" />
+                        Código
+                      </a>
+                    )}
+                  </div>
                 </div>
               </article>
             </Reveal>

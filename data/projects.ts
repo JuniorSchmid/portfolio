@@ -138,12 +138,20 @@ export const projects: Project[] = [
     slug: "artefacto",
     order: 3,
     title: "Artefacto",
-    kind: "Presença digital",
+    kind: "Produto web",
     summary:
-      "Site de uma metalúrgica, com uma visita visual à fábrica inteira pelo navegador.",
+      "Plataforma institucional de uma metalúrgica com CMS próprio, cinco perfis de acesso e canal de ouvidoria anônimo.",
     description:
-      "Reúne tudo que um cliente precisa saber sobre a empresa — processos, capacidade produtiva e produtos — e vai além da ficha institucional: o site leva o visitante por uma visita visual à fábrica, mostrando a operação por dentro sem que ele precise ir até lá. É o contraponto aos outros projetos: aqui o problema não é de processo, é de comunicação.",
-    stack: ["Next.js", "React", "Tailwind CSS"],
+      "Site público e painel administrativo no mesmo projeto, para uma indústria com 40 anos de operação e clientes como John Deere, AGCO e Stara. A parte pública faz a visita visual à fábrica — vídeo institucional e uma página para cada etapa do processo produtivo — e o painel deixa marketing, RH, compliance e comercial cuidarem do próprio conteúdo, cada um vendo só o que lhe cabe.",
+    stack: [
+      "Next.js 15",
+      "TypeScript",
+      "PostgreSQL",
+      "Prisma",
+      "Tailwind CSS",
+      "JWT",
+      "Vercel Blob",
+    ],
     featured: true,
     image: "/artefacto.jpg",
     imageAlt: "Página inicial do site da Artefacto",
@@ -151,7 +159,37 @@ export const projects: Project[] = [
     imageHeight: 740,
     year: "2025",
     role: "Desenvolvimento individual",
-    client: "Artefacto Indústria Metalúrgica",
+    client: "Artefacto — metalúrgica e madeireira, Horizontina/RS",
+    live: "https://artefacto.ind.br",
+    repo: "https://github.com/JuniorSchmid/Site-industrial-Artefacto",
+    caseStudy: {
+      problem:
+        "Uma indústria de 40 anos que fornece para John Deere, AGCO e Stara precisa provar capacidade produtiva para compradores que nunca vão pisar na fábrica. E precisa fazer isso sem depender de um desenvolvedor toda vez que abre uma vaga, publica um post ou troca o logo de um cliente. Havia ainda uma exigência que um site institucional comum não cobre: um canal de ouvidoria que proteja de verdade quem faz a denúncia.",
+      approach:
+        "Uma aplicação só, com duas caras. A pública resolve a comunicação: vídeo institucional, linha do tempo desde 1985 e uma página por etapa produtiva, que juntas funcionam como uma visita à fábrica. A privada resolve a autonomia: um CMS próprio onde cada setor administra a sua parte — blog, vagas, currículos, contatos, orçamentos e denúncias — sem enxergar o resto.",
+      decisions: [
+        {
+          title: "CMS próprio em vez de WordPress",
+          body: "O painel atende cinco setores com necessidades diferentes. Um CMS genérico ou daria acesso total a todo mundo ou exigiria uma pilha de plugins para chegar perto disso. Escrever o painel permitiu modelar cinco perfis (SUPER_ADMIN, MARKETING, RH, COMPLIANCE e COMERCIAL) com permissão por módulo, que é o que o negócio realmente pedia.",
+        },
+        {
+          title: "Autorização no middleware, não em cada página",
+          body: "O middleware valida sessão e permissão por módulo antes de qualquer rota de /api/admin e das escritas do blog. A consequência é o que importa: uma rota nova nasce protegida por padrão, em vez de depender de alguém lembrar de checar permissão dentro dela.",
+        },
+        {
+          title: "A ouvidoria protege o denunciante por desenho",
+          body: "A denúncia é anônima e gera um protocolo aleatório. A consulta pública devolve apenas o status, nunca o conteúdo — quem tem o protocolo não consegue ler a denúncia de volta. Os anexos vão para um Blob store separado do usado pelo blog, para que o material sensível não divida espaço com o conteúdo público.",
+        },
+        {
+          title: "HTML do editor sanitizado antes de renderizar",
+          body: "O blog usa editor rich-text, o que significa que o banco guarda HTML. Sem sanitização, o painel viraria um vetor de XSS armazenado para qualquer pessoa com acesso a ele. Todo conteúdo passa por DOMPurify antes de chegar na página.",
+        },
+        {
+          title: "Anti-spam sem CAPTCHA",
+          body: "Honeypot, tempo mínimo de preenchimento e validação de tamanho no servidor seguram bot sem colocar um obstáculo na frente do usuário. Isso vale para todos os formulários, mas decidiu-se pela ouvidoria: atrito ali desencoraja denúncia legítima.",
+        },
+      ],
+    },
   },
   {
     slug: "briquefacil",

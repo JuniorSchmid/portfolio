@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import { ArrowUpRight, Github } from "lucide-react"
 import { Navbar } from "@/components/sections/navbar"
 import { Footer } from "@/components/sections/footer"
 import { ProjectMedia } from "@/components/project-media"
@@ -76,6 +77,33 @@ export default async function CaseStudyPage({
               <p className="measure mt-6 text-lg text-muted">
                 {project.summary}
               </p>
+
+              {(project.live || project.repo) && (
+                <div className="mt-7 flex flex-wrap items-center gap-x-6 gap-y-3">
+                  {project.live && (
+                    <a
+                      href={project.live}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 rounded-full gradient-bg px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
+                    >
+                      Abrir o site
+                      <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                    </a>
+                  )}
+                  {project.repo && (
+                    <a
+                      href={project.repo}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-white"
+                    >
+                      <Github className="h-4 w-4" aria-hidden="true" />
+                      Ver o código
+                    </a>
+                  )}
+                </div>
+              )}
 
               <dl className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
                 {project.year && (
