@@ -3,7 +3,6 @@ import type { Metadata } from "next"
 import { Poppins } from "next/font/google"
 import "./globals.css"
 
-
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
@@ -11,14 +10,47 @@ const poppins = Poppins({
   display: "swap",
 })
 
+const SITE_URL = "https://www.juniorportfolio.blog"
+
 export const metadata: Metadata = {
-  title: "Junior • Portfólio",
-  description: "Desenvolvedor WEB focado em criar soluções inovadoras e experiências excepcionais",
-  generator: "Junior PJ",
-  icons: {
-    icon: "/logo_main2.png",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Junior • Portfólio",
+    template: "%s · Junior Schmid",
   },
+  description:
+    "Desenvolvedor de software e automação. Automatizo o que não deveria ser feito à mão — de linha de produção a rotina de escritório.",
+  keywords: [
+    "desenvolvedor de software",
+    "automação de processos",
+    "visão computacional",
+    "Python",
+    "Next.js",
+    "Horizontina",
+    "Rio Grande do Sul",
+  ],
+  authors: [{ name: "Junior Schmid" }],
+  creator: "Junior Schmid",
+  icons: { icon: "/logo_main2.png" },
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    url: SITE_URL,
+    siteName: "Junior • Portfólio",
+    title: "Junior • Portfólio",
+    description:
+      "Automatizo o que não deveria ser feito à mão — de linha de produção a rotina de escritório.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Junior • Portfólio",
+    description:
+      "Automatizo o que não deveria ser feito à mão — de linha de produção a rotina de escritório.",
+  },
+  robots: { index: true, follow: true },
 }
+
 export default function RootLayout({
   children,
 }: {
@@ -26,9 +58,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR" className={poppins.variable}>
-      <body>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   )
 }
