@@ -31,7 +31,9 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Junior Schmid" }],
   creator: "Junior Schmid",
-  icons: { icon: "/logo_main2.png" },
+  // A logo otimizada (5 kB, com transparência) no lugar do logo_main2.png,
+  // que tinha 1,3 MB e fundo chapado.
+  icons: { icon: "/logo.png" },
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
